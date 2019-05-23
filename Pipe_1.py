@@ -87,7 +87,15 @@ ordlist6 = ordlist5[ordlist5["pc_count"] > 2]
 print(ordlist6.shape)
 print(ordlist6.head())
 
-ordlist7 = pd.merge(ordlist6, ordlist2, on = ["client_custid", "client_prodid"])
+ordlist7 = ordlist2.merge( ordlist5,  on = ["client_custid", "client_prodid"], how = 'left')
 print("*******   7 *****")
 print(ordlist7.shape)
 print(ordlist7.head(20)) 
+print(list(ordlist7))
+ordlist7["pc_count"].fillna(0, inplace =True)
+
+orddet_not_predicted = ordlist7[ordlist7["pc_count"] <3]
+orddet_pipe_1 = ordlist7[ordlist7["pc_count"] >2]
+
+orddet_not_predicted.to_csv('orddet_not_predicted.csv', index =False ,header =True)
+orddet_pipe_1.to_csv       ('orddet_pipe_1.csv', index =False , header =True)
