@@ -46,8 +46,8 @@ dtype={"cliepdnt_orderid":int,"client_custid":int,"client_prodid":int,
 
 orddet['row_id'] = orddet.index       
 
-print(orddet.head())
-print(orddet.shape)
+#print(orddet.head())
+#print(orddet.shape)
 
 csv_read_path = os.path.join(my_path, key_file)
 
@@ -55,43 +55,43 @@ ordhead = pd.read_csv(csv_read_path)
 ordhead = ordhead.astype({"client_custid":int, "client_orderid":int})
 ordhead["order_date"] = pd.to_datetime (ordhead["order_date"])
 ordhead["delivery_date"] = pd.to_datetime (ordhead["delivery_date"])
-print(ordhead.head())
+#print(ordhead.head())
 
-#print(ordhead.dtypes)
+##print(ordhead.dtypes)
 # merge the order header and detail records
 ordlist1 = pd.merge(ordhead, orddet, on = ["client_orderid", "client_custid"])
 
 
 #remove duplicate column names
-print(ordlist1.head())
+#print(ordlist1.head())
 ordlist2 = ordlist1.filter(["row_id", "client_orderid", "client_custid","client_prodid", "cases_ordered", "units_ordered","cases_inven","units_inven","discount","discount_flag","order_date","delivery_date"], axis =1)
 
-print(list(ordlist2))
-print(ordlist2.shape)
+#print(list(ordlist2))
+#print(ordlist2.shape)
 
 #filter the zero ccase orders ou of the data set
 ordlist3 = ordlist2[ordlist2["cases_ordered"] > 0]
 
-print(list(ordlist3))
-print(ordlist3.shape)
+#print(list(ordlist3))
+#print(ordlist3.shape)
 
 # group by cid and pid with counts of rows
 ordlist4 = ordlist3.groupby(['client_custid', 'client_prodid'])
 ordlist5 = ordlist4.size().reset_index(name = 'pc_count')
  #  ordlist4.size().reset_index(name = "rowcount")
-print("*****4****")
-print(ordlist5.head())
-print(ordlist5.shape)
+#print("*****4****")
+#print(ordlist5.head())
+#print(ordlist5.shape)
 
 ordlist6 = ordlist5[ordlist5["pc_count"] > 2] 
-print(ordlist6.shape)
-print(ordlist6.head())
+#print(ordlist6.shape)
+#print(ordlist6.head())
 
 ordlist7 = ordlist2.merge( ordlist5,  on = ["client_custid", "client_prodid"], how = 'left')
-print("*******   7 *****")
-print(ordlist7.shape)
-print(ordlist7.head(20)) 
-print(list(ordlist7))
+#print("*******   7 *****")
+#print(ordlist7.shape)
+#print(ordlist7.head(20)) 
+#print(list(ordlist7))
 ordlist7["pc_count"].fillna(0, inplace =True)
 
 orddet_not_predicted = ordlist7[ordlist7["pc_count"] <3]
